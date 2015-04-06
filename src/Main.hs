@@ -68,11 +68,14 @@ eval (DBLam t12) v2 = shift (-1) 0 (subs 0 (shift 1 0 v2) t12)
 ---------------------------------------------
 --Interp. evaln
 evaln :: DBExpr -> DBExpr
-evaln (DBApp (DBLam (DBVar t1)) (DBVar t2)) = eval (DBLam (DBVar t1)) (DBVar t2)
-evaln (DBApp (DBLam (DBVar t1)) (DBLam (DBVar t2))) = eval (DBLam (DBVar t1)) (DBLam (DBVar t2))
-evaln (DBApp t1 t2) = evaln (DBApp (evaln(t1)) (evaln(t2)))
-evaln (DBLam t) = (DBLam (evaln t))
+--evaln (DBApp (DBLam (DBVar t1)) (DBVar t2)) = eval (DBLam (DBVar t1)) (DBVar t2)
+--evaln (DBApp (DBLam (DBVar t1)) (DBLam (DBVar t2))) = eval (DBLam (DBVar t1)) (DBLam (DBVar t2))
+--evaln (DBApp t1 t2) = evaln (DBApp (evaln(t1)) (evaln(t2)))
+evaln (DBApp t1 t2) = eval (evaln (t1)) (evaln (t2)) 
+evaln (DBLam (DBVar t)) = (DBLam (DBVar t)) 
+evaln (DBLam t) = (DBLam (evaln (t)))
 evaln (DBVar t) = DBVar t
+evaln t = t
 
 
 
@@ -81,7 +84,7 @@ evaln (DBVar t) = DBVar t
 
 
 
-main = print ()
+main = print (evaln (DBApp (DBLam (DBLam (DBLam (DBVar 2)))) (DBVar 2)))
 
 -- test-input
 -----------------------------------------
