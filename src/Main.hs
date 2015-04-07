@@ -68,7 +68,7 @@ subs j s (DBApp t1 t2) = DBApp (subs j s t1) (subs j s t2)
 ---------------------------------------------
 --Interp. B-reduction (1 step)
 eval :: DBExpr -> DBExpr -> DBExpr
-eval (DBLam t12) v2 = shift (-1) 0 (subs 0 (shift 1 0 v2) t12)
+eval t12 v2 = shift (-1) 0 (subs 0 (shift 1 0 v2) t12)
 
 
 ---------------------------------------------
