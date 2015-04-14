@@ -68,7 +68,8 @@ subs j s (DBApp t1 t2) = DBApp (subs j s t1) (subs j s t2)
 ---------------------------------------------
 --Interp. B-reduction (1 step)
 eval :: DBExpr -> DBExpr -> DBExpr
-eval t12 v2 = shift (-1) 0 (subs 0 (shift 1 0 v2) t12)
+eval (DBLam t12) v2 = shift (-1) 0 (subs 0 (shift 1 0 v2) t12)
+eval t1 t2 = DBApp t1 t2
 
 
 ---------------------------------------------
@@ -90,7 +91,8 @@ dbexpr_to_expr t list = let
                         in go t list ((num_for_freeDB t)-1)
 
 
-main = print (dbexpr_to_expr (DBLam (DBLam (DBVar 0))) ["x","y","z","d","e"])
+main = print ("ok")
+          
 
 -- test-input
 -----------------------------------------
@@ -122,4 +124,20 @@ main = print (dbexpr_to_expr (DBLam (DBLam (DBVar 0))) ["x","y","z","d","e"])
 --__output5
 --Lam "y" (Lam "x" (Var "x"))
 
+--__inputGlobalTest1
+--1) print (expr_to_dbexpr (App (Lam "q" (Lam "s" (Lam "k" (Var "q")))) (Lam "q" (Lam "p" (Lam "k" (Var "p"))))))
+--2) print (evaln (DBApp (DBLam (DBLam (DBLam (DBVar 2)))) (DBLam (DBLam (DBLam (DBVar 1))))))
+--3) print (dbexpr_to_expr (DBLam (DBLam (DBLam (DBLam (DBLam (DBVar 1)))))) ["x","y","z","a","b"])
+--__outputGlobalTest2
+--1) DBApp (DBLam (DBLam (DBLam (DBVar 2)))) (DBLam (DBLam (DBLam (DBVar 1))))
+--2) DBLam (DBLam (DBLam (DBLam (DBLam (DBVar 1)))))
+--3) Lam "b" (Lam "a" (Lam "z" (Lam "y" (Lam "x" (Var "y")))))
 
+--__inputGlobalTest2
+--1) print (expr_to_dbexpr (App (Lam "q" (Lam "s" (Lam "k" (Var "a")))) (Lam "q" (Lam "p" (Lam "k" (Var "b"))))))
+--2) print (evaln (DBApp (DBLam (DBLam (DBLam (DBVar 10)))) (DBLam (DBLam (DBLam (DBVar 10))))))
+--3) print (dbexpr_to_expr (DBLam (DBLam (DBVar 9))) ["a","b","c","d","e","f","g","j","i","j","y"])
+--__outputGlobalTest2
+--1) DBApp (DBLam (DBLam (DBLam (DBVar 10)))) (DBLam (DBLam (DBLam (DBVar 10))))
+--2) DBLam (DBLam (DBVar 9))
+--3) Lam "b" (Lam "a" (Var "j"))
